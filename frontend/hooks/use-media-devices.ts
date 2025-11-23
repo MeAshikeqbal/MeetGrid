@@ -98,7 +98,7 @@ export function useMediaDevices() {
 
       return newStream
     } catch (err) {
-      console.error("[v0] Error switching device:", err)
+      console.error("Error switching device:", err)
       throw err
     }
   }

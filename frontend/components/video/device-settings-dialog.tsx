@@ -29,7 +29,7 @@ export function DeviceSettingsDialog({
       await onDeviceChange(selectedVideoDevice || undefined, selectedAudioDevice || undefined)
       setIsOpen(false)
     } catch (error) {
-      console.error("[v0] Error applying device settings:", error)
+      console.error("Error applying device settings:", error)
     } finally {
       setIsApplying(false)
     }

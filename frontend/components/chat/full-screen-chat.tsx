@@ -1,7 +1,7 @@
 "use client"
 
 import { memo, useState, useRef, useEffect } from "react"
-import { Send, Settings, LogOut, Users } from "lucide-react"
+import { Send, Settings, LogOut, Users, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface Message {
@@ -15,12 +15,31 @@ export const FullScreenChat = memo(function FullScreenChat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState("")
   const [isConnected, setIsConnected] = useState(true)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false
+    const savedTheme = localStorage.getItem("chat-theme")
+    if (savedTheme) return savedTheme === "dark"
+    return typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+  })
+
+  // Sync document class with isDark state
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark)
+  }, [isDark])
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
+
+  const handleThemeToggle = () => {
+    const newTheme = !isDark
+    setIsDark(newTheme)
+    localStorage.setItem("chat-theme", newTheme ? "dark" : "light")
+    document.documentElement.classList.toggle("dark", newTheme)
+  }
 
   const handleSendMessage = () => {
     if (!inputMessage.trim()) return
@@ -53,6 +72,15 @@ export const FullScreenChat = memo(function FullScreenChat() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-primary-foreground hover:bg-primary-foreground/10"
+            onClick={handleThemeToggle}
+            title={isDark ? "Light mode" : "Dark mode"}
+          >
+            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </Button>
           <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-primary-foreground/10">
             <Settings className="w-5 h-5" />
           </Button>

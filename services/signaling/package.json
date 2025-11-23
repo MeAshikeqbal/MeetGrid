@@ -1,0 +1,17 @@
+{
+  "name": "signaling",
+  "version": "1.0.0",
+  "description": "MeetGrid WebRTC Signaling Server",
+  "main": "src/index.js",
+  "type": "module",
+  "author": "Ashik Eqbal",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node src/index.js",
+    "start": "NODE_ENV=production node src/index.js",
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}

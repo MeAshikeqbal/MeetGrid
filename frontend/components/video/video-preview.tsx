@@ -134,7 +134,7 @@ export function VideoPreview({
         {/* Help Text */}
         <div className="text-center space-y-2">
           <p className="text-sm text-foreground/60">
-            Ensure you're in a quiet environment with good lighting
+            Ensure you&apos;re in a quiet environment with good lighting
           </p>
           <p className="text-xs text-foreground/50">
             You can test your camera and microphone before starting

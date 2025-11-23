@@ -1,19 +1,23 @@
 'use client'
 
-import { memo, useState, useCallback } from 'react'
-import { Phone, PhoneOff, Mic, MicOff, Video, VideoOff } from 'lucide-react'
+import { memo, useCallback } from 'react'
+import { PhoneOff, Mic, MicOff, Video, VideoOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ChatSidebar } from './chat-sidebar'
 import { LocalVideo, RemoteVideo } from './video-streams'
+import { DeviceSettingsDialog } from './device-settings-dialog'
 
 interface VideoCallContainerProps {
   localStream: MediaStream | null
   remoteStream: MediaStream | null
   isAudioEnabled: boolean
   isVideoEnabled: boolean
+  videoDevices: MediaDeviceInfo[]
+  audioDevices: MediaDeviceInfo[]
   onToggleAudio: () => void
   onToggleVideo: () => void
   onEndCall: () => void
+  onDeviceChange: (videoDeviceId?: string, audioDeviceId?: string) => Promise<void>
 }
 
 export const VideoCallContainer = memo(function VideoCallContainer({
@@ -21,9 +25,12 @@ export const VideoCallContainer = memo(function VideoCallContainer({
   remoteStream,
   isAudioEnabled,
   isVideoEnabled,
+  videoDevices,
+  audioDevices,
   onToggleAudio,
   onToggleVideo,
   onEndCall,
+  onDeviceChange,
 }: VideoCallContainerProps) {
   const handleAudioToggle = useCallback(() => {
     onToggleAudio()
@@ -46,7 +53,7 @@ export const VideoCallContainer = memo(function VideoCallContainer({
           {remoteStream ? (
             <RemoteVideo stream={remoteStream} />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-background to-background/50">
+            <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-background to-background/50">
               <div className="text-center space-y-4">
                 <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
                   <div className="w-20 h-20 rounded-full bg-primary/30 flex items-center justify-center">
@@ -73,7 +80,7 @@ export const VideoCallContainer = memo(function VideoCallContainer({
           </div>
 
           {/* Controls Bar */}
-          <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-4 pb-6 px-4 bg-gradient-to-t from-black/60 to-transparent pt-8">
+          <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-4 pb-6 px-4 bg-linear-to-t from-black/60 to-transparent pt-8">
             <Button
               variant="ghost"
               size="lg"
@@ -90,6 +97,13 @@ export const VideoCallContainer = memo(function VideoCallContainer({
                 <MicOff className="w-6 h-6 text-destructive" />
               )}
             </Button>
+
+            <DeviceSettingsDialog
+              videoDevices={videoDevices}
+              audioDevices={audioDevices}
+              localStream={localStream}
+              onDeviceChange={onDeviceChange}
+            />
 
             <Button
               variant="ghost"

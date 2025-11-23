@@ -8,7 +8,7 @@ import { Spinner } from '@/components/ui/spinner'
 
 export default function VideoStartPage() {
   const router = useRouter()
-  const { stream: localStream, isLoading, error } = useMediaDevices()
+  const { stream: localStream, videoDevices, audioDevices, isLoading, error, switchDevice } = useMediaDevices()
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null)
   const [isAudioEnabled, setIsAudioEnabled] = useState(true)
   const [isVideoEnabled, setIsVideoEnabled] = useState(true)
@@ -45,6 +45,14 @@ export default function VideoStartPage() {
       localStream.getTracks().forEach((track) => track.stop())
     }
     router.push('/video')
+  }
+
+  const handleDeviceChange = async (videoDeviceId?: string, audioDeviceId?: string) => {
+    try {
+      await switchDevice(videoDeviceId, audioDeviceId)
+    } catch (error) {
+      console.error("Failed to switch device:", error)
+    }
   }
 
   if (isLoading) {
@@ -84,9 +92,12 @@ export default function VideoStartPage() {
       remoteStream={remoteStream}
       isAudioEnabled={isAudioEnabled}
       isVideoEnabled={isVideoEnabled}
+      videoDevices={videoDevices}
+      audioDevices={audioDevices}
       onToggleAudio={handleToggleAudio}
       onToggleVideo={handleToggleVideo}
       onEndCall={handleEndCall}
+      onDeviceChange={handleDeviceChange}
     />
   )
 }

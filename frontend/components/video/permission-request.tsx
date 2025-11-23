@@ -20,14 +20,14 @@ export function PermissionRequest({ onAllow, onDeny }: PermissionRequestProps) {
         <CardContent className="space-y-6">
           <div className="space-y-3">
             <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-              <Camera className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <Camera className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium text-sm">Camera</p>
                 <p className="text-xs text-foreground/60">For video streaming during calls</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-3 bg-muted/50 rounded-lg">
-              <Mic className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+              <Mic className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium text-sm">Microphone</p>
                 <p className="text-xs text-foreground/60">For audio during conversations</p>
@@ -36,7 +36,7 @@ export function PermissionRequest({ onAllow, onDeny }: PermissionRequestProps) {
           </div>
 
           <div className="flex items-start gap-2 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-            <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <p className="text-xs text-amber-700 dark:text-amber-200">
               You can change these permissions in your browser settings at any time
             </p>

@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { Mic, MicOff, Video, VideoOff, Phone, Settings } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Mic, MicOff, Video, VideoOff, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { DeviceSettingsDialog } from './device-settings-dialog'
 
 interface VideoPreviewProps {
   stream: MediaStream | null
@@ -11,7 +12,9 @@ interface VideoPreviewProps {
   onToggleAudio: () => void
   onToggleVideo: () => void
   onStartCall: () => void
-  onSettings: () => void
+  videoDevices: MediaDeviceInfo[]
+  audioDevices: MediaDeviceInfo[]
+  onDeviceChange: (videoDeviceId?: string, audioDeviceId?: string) => Promise<void>
 }
 
 export function VideoPreview({
@@ -21,9 +24,12 @@ export function VideoPreview({
   onToggleAudio,
   onToggleVideo,
   onStartCall,
-  onSettings,
+  videoDevices,
+  audioDevices,
+  onDeviceChange,
 }: VideoPreviewProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [showDeviceSettings, setShowDeviceSettings] = useState(false)
 
   useEffect(() => {
     if (videoRef.current && stream) {
@@ -37,12 +43,12 @@ export function VideoPreview({
         {/* Video Preview */}
           <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
             <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-full"
-            />
+              ref={videoRef} 
+              autoPlay 
+              playsInline 
+              muted 
+              className="w-full h-full object-cover" 
+              />
             {!isVideoEnabled && (
               <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
                 <VideoOff className="w-12 h-12 text-foreground/50" />
@@ -52,7 +58,7 @@ export function VideoPreview({
             {/* Status indicators */}
             <div className="absolute top-4 right-4 flex gap-2">
               <div className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 ${
-                isVideoEnabled
+                  isVideoEnabled
                   ? 'bg-green-500/20 text-green-700 dark:text-green-400'
                   : 'bg-red-500/20 text-red-700 dark:text-red-400'
               }`}>
@@ -60,7 +66,7 @@ export function VideoPreview({
                 Camera {isVideoEnabled ? 'On' : 'Off'}
               </div>
               <div className={`px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 ${
-                isAudioEnabled
+                  isAudioEnabled
                   ? 'bg-green-500/20 text-green-700 dark:text-green-400'
                   : 'bg-red-500/20 text-red-700 dark:text-red-400'
               }`}>
@@ -119,15 +125,14 @@ export function VideoPreview({
               <Phone className="w-5 h-5" />
               Start Video Call
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full border-border gap-2"
-              onClick={onSettings}
-            >
-              <Settings className="w-4 h-4" />
-              Device Settings
-            </Button>
+            <div className="relative">
+              <DeviceSettingsDialog
+                videoDevices={videoDevices}
+                audioDevices={audioDevices}
+                localStream={stream}
+                onDeviceChange={onDeviceChange}
+              />
+            </div>
           </div>
         </div>
 

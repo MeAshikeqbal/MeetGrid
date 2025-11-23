@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useMediaDevices } from '@/hooks/use-media-devices'
 import { VideoPreview } from '@/components/video/video-preview'
 import { ErrorState } from '@/components/video/error-state'
 import { Spinner } from '@/components/ui/spinner'
 
 export default function VideoPage() {
-  const { stream, isLoading, error, stopStream } = useMediaDevices()
+  const { stream, isLoading, error, stopStream, videoDevices, audioDevices, switchDevice } = useMediaDevices()
   const [isAudioEnabled, setIsAudioEnabled] = useState(true)
   const [isVideoEnabled, setIsVideoEnabled] = useState(true)
   const [retryCount, setRetryCount] = useState(0)
@@ -37,9 +37,12 @@ export default function VideoPage() {
     // TODO: Implement WebRTC connection and matchmaking
   }
 
-  const handleSettings = () => {
-    console.log('Opening device settings')
-    // TODO: Implement device selection dialog
+  const handleDeviceChange = async (videoDeviceId?: string, audioDeviceId?: string) => {
+    try {
+      await switchDevice(videoDeviceId, audioDeviceId)
+    } catch (err) {
+      console.error('Failed to switch devices:', err)
+    }
   }
 
   const handleRetry = () => {
@@ -74,7 +77,9 @@ export default function VideoPage() {
         onToggleAudio={handleToggleAudio}
         onToggleVideo={handleToggleVideo}
         onStartCall={handleStartCall}
-        onSettings={handleSettings}
+        videoDevices={videoDevices}
+        audioDevices={audioDevices}
+        onDeviceChange={handleDeviceChange}
       />
     )
   }

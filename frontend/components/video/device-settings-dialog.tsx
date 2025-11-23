@@ -38,16 +38,17 @@ export function DeviceSettingsDialog({
   return (
     <>
       <Button
-        variant="ghost"
         size="lg"
-        className="rounded-full p-4 bg-primary/20 hover:bg-primary/30"
+        variant="outline"
+        className="w-full border-border gap-2 bg-transparent"
         onClick={() => setIsOpen(true)}
       >
-        <Settings className="w-6 h-6" />
+        <Settings className="w-4 h-4" />
+        Device Settings
       </Button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-md bg-background border-primary/20 p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Device Settings</h2>

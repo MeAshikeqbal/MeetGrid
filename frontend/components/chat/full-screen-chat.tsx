@@ -34,17 +34,6 @@ export const FullScreenChat = memo(function FullScreenChat() {
 
     setMessages((prev) => [...prev, newMessage])
     setInputMessage("")
-
-    // Simulate receiving a message after a short delay
-    setTimeout(() => {
-      const responseMessage: Message = {
-        id: Math.random().toString(36).substr(2, 9),
-        sender: "other",
-        text: "Hey! How are you?",
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, responseMessage])
-    }, 1000)
   }
 
   const handleNext = () => {

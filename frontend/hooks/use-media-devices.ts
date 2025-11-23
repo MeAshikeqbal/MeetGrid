@@ -74,6 +74,35 @@ export function useMediaDevices() {
     }
   }, [])
 
+  const switchDevice = async (videoDeviceId?: string, audioDeviceId?: string) => {
+    try {
+      // Stop existing tracks
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop())
+      }
+
+      // Request new stream with specified devices
+      const constraints: MediaStreamConstraints = {
+        video: videoDeviceId ? { deviceId: { exact: videoDeviceId } } : { facingMode: "user" },
+        audio: audioDeviceId ? { deviceId: { exact: audioDeviceId } } : true,
+      }
+
+      const newStream = await navigator.mediaDevices.getUserMedia(constraints)
+      streamRef.current = newStream
+
+      setMediaDevices((prev) => ({
+        ...prev,
+        stream: newStream,
+        error: null,
+      }))
+
+      return newStream
+    } catch (err) {
+      console.error("[v0] Error switching device:", err)
+      throw err
+    }
+  }
+
   const stopStream = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop())
@@ -81,5 +110,5 @@ export function useMediaDevices() {
     }
   }
 
-  return { ...mediaDevices, stopStream }
+  return { ...mediaDevices, stopStream, switchDevice }
 }

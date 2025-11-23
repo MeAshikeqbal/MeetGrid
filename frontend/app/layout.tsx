@@ -8,7 +8,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: 'MeetGrid - Meet New People Instantly',
   description: 'Connect with strangers through video chat, voice calls, and text messaging. Real-time conversations with people around the world.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {

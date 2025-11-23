@@ -14,6 +14,7 @@ export default function Home() {
     const isDarkMode = localStorage.getItem('theme') === 'dark' ||
       (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
     setIsDark(isDarkMode)
+    // eslint-disable-next-line react-hooks/immutability
     updateTheme(isDarkMode)
   }, [])
 
@@ -113,11 +114,11 @@ export default function Home() {
             </div>
 
             <div className="relative h-64 sm:h-80 lg:h-full min-h-96">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl blur-3xl" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-accent/20 rounded-2xl blur-3xl" />
               <div className="relative bg-card border border-border rounded-2xl p-6 sm:p-8 backdrop-blur-sm h-full">
                 <div className="space-y-4">
                   <div className="flex items-start gap-4">
-                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-primary/20 flex-shrink-0" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-primary/20 shrink-0" />
                     <div className="space-y-2 flex-1">
                       <div className="h-2 bg-border rounded-full w-3/4" />
                       <div className="h-2 bg-border rounded-full w-2/4" />
@@ -128,10 +129,10 @@ export default function Home() {
                       <div className="h-2 bg-primary/30 rounded-full w-2/4 ml-auto" />
                       <div className="h-2 bg-primary/30 rounded-full w-3/4 ml-auto" />
                     </div>
-                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-primary/20 flex-shrink-0" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-primary/20 shrink-0" />
                   </div>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-secondary/20 flex-shrink-0" />
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-secondary/20 shrink-0" />
                     <div className="space-y-2 flex-1">
                       <div className="h-2 bg-border rounded-full w-3/4" />
                       <div className="h-2 bg-border rounded-full w-2/4" />

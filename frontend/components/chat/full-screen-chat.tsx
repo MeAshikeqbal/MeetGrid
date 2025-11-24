@@ -1,6 +1,7 @@
 "use client"
 
 import { memo, useState, useRef, useEffect } from "react"
+import { useTheme } from "next-themes"
 import { Send, Settings, LogOut, Users, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -12,22 +13,19 @@ interface Message {
 }
 
 export const FullScreenChat = memo(function FullScreenChat() {
+  const { theme, setTheme } = useTheme()
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState("")
   const [isConnected, setIsConnected] = useState(true)
-  const messagesEndRef = useRef<HTMLDivElement | null>(null)
+  const [mounted, setMounted] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const [isDark, setIsDark] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false
-    const savedTheme = localStorage.getItem("chat-theme")
-    if (savedTheme) return savedTheme === "dark"
-    return typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-  })
-
-  // Sync document class with isDark state
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark)
-  }, [isDark])
+    const timer = window.setTimeout(() => {
+      setMounted(true)
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [])
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -35,10 +33,7 @@ export const FullScreenChat = memo(function FullScreenChat() {
   }, [messages])
 
   const handleThemeToggle = () => {
-    const newTheme = !isDark
-    setIsDark(newTheme)
-    localStorage.setItem("chat-theme", newTheme ? "dark" : "light")
-    document.documentElement.classList.toggle("dark", newTheme)
+    setTheme(theme === "dark" ? "light" : "dark")
   }
 
   const handleSendMessage = () => {
@@ -61,6 +56,8 @@ export const FullScreenChat = memo(function FullScreenChat() {
     console.log("Moving to next person")
   }
 
+  if (!mounted) return null
+
   return (
     <div className="flex flex-col h-screen bg-background text-foreground">
       {/* Header */}
@@ -77,9 +74,9 @@ export const FullScreenChat = memo(function FullScreenChat() {
             size="sm"
             className="text-primary-foreground hover:bg-primary-foreground/10"
             onClick={handleThemeToggle}
-            title={isDark ? "Light mode" : "Dark mode"}
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
           >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === "dark" ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </Button>
           <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-primary-foreground/10">
             <Settings className="w-5 h-5" />

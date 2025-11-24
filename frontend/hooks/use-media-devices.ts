@@ -26,11 +26,23 @@ export function useMediaDevices() {
       try {
         setMediaDevices((prev) => ({ ...prev, isLoading: true }))
 
-        // Request permissions
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'user' },
-          audio: true,
-        })
+        const savedVideoDeviceId = localStorage.getItem("preferred-video-device")
+        const savedAudioDeviceId = localStorage.getItem("preferred-audio-device")
+
+        // Try to request with saved devices first
+        let stream: MediaStream | null = null
+
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: savedVideoDeviceId ? { deviceId: { exact: savedVideoDeviceId } } : { facingMode: "user" },
+            audio: savedAudioDeviceId ? { deviceId: { exact: savedAudioDeviceId } } : true,
+          })
+        } catch {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+            audio: true,
+          })
+        }
 
         streamRef.current = stream
 
@@ -38,6 +50,17 @@ export function useMediaDevices() {
         const devices = await navigator.mediaDevices.enumerateDevices()
         const videoDevices = devices.filter((device) => device.kind === 'videoinput')
         const audioDevices = devices.filter((device) => device.kind === 'audioinput')
+
+        const videoTrack = stream.getVideoTracks()[0]
+        const audioTrack = stream.getAudioTracks()[0]
+        const videoDeviceIdFromTrack = videoTrack?.getSettings().deviceId
+        const audioDeviceIdFromTrack = audioTrack?.getSettings().deviceId
+        if (videoDeviceIdFromTrack) {
+          localStorage.setItem("preferred-video-device", videoDeviceIdFromTrack)
+        }
+        if (audioDeviceIdFromTrack) {
+          localStorage.setItem("preferred-audio-device", audioDeviceIdFromTrack)
+        }
 
         setMediaDevices({
           stream,
@@ -89,6 +112,9 @@ export function useMediaDevices() {
 
       const newStream = await navigator.mediaDevices.getUserMedia(constraints)
       streamRef.current = newStream
+
+      if (videoDeviceId) localStorage.setItem("preferred-video-device", videoDeviceId)
+      if (audioDeviceId) localStorage.setItem("preferred-audio-device", audioDeviceId)
 
       setMediaDevices((prev) => ({
         ...prev,
